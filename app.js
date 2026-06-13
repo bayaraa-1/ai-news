@@ -1,12 +1,16 @@
 const state = {
   articles: [],
   activeCategory: "Бүгд",
-  query: ""
+  query: "",
+  sort: "newest",
+  view: localStorage.getItem("aiNewsView") || "grid"
 };
 
-const newsGrid = document.getElementById("newsGrid");
-const filterBar = document.getElementById("filterBar");
-const searchInput = document.getElementById("searchInput");
+const $ = selector => document.querySelector(selector);
+const newsGrid = $("#newsGrid");
+const filterBar = $("#filterBar");
+const searchInput = $("#searchInput");
+const sortSelect = $("#sortSelect");
 
 const formatter = new Intl.DateTimeFormat("mn-MN", {
   year: "numeric",
@@ -15,19 +19,57 @@ const formatter = new Intl.DateTimeFormat("mn-MN", {
 });
 
 function normalize(value) {
-  return (value || "").toString().toLowerCase();
+  return (value || "").toString().toLowerCase().trim();
 }
 
-function renderFilters() {
-  const categories = ["Бүгд", ...new Set(state.articles.map(item => item.category))];
+function estimateReadingTime(count) {
+  const minutes = Math.max(2, Math.ceil(count * 0.8));
+  return `${minutes} мин`;
+}
 
-  filterBar.innerHTML = categories
-    .map(category => `
-      <button class="${category === state.activeCategory ? "active" : ""}" data-category="${category}">
-        ${category}
-      </button>
-    `)
-    .join("");
+function updateClock() {
+  const now = new Date();
+  $("#clock").textContent = now.toLocaleTimeString("mn-MN", { hour: "2-digit", minute: "2-digit" });
+  $("#todayLabel").textContent = `${formatter.format(now)} · Өнөөдрийн тойм`;
+}
+setInterval(updateClock, 30000);
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem("aiNewsTheme", theme);
+  $("#themeIcon").textContent = theme === "dark" ? "☾" : "☼";
+  $("#themeLabel").textContent = theme === "dark" ? "Dark" : "Light";
+}
+const savedTheme = localStorage.getItem("aiNewsTheme") || "dark";
+setTheme(savedTheme);
+
+$("#themeToggle").addEventListener("click", () => {
+  setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+});
+
+$("#menuToggle").addEventListener("click", () => {
+  const nav = $("#navLinks");
+  const isOpen = nav.classList.toggle("open");
+  $("#menuToggle").setAttribute("aria-expanded", String(isOpen));
+});
+
+document.querySelectorAll("#navLinks a").forEach(link => {
+  link.addEventListener("click", () => {
+    $("#navLinks").classList.remove("open");
+    $("#menuToggle").setAttribute("aria-expanded", "false");
+  });
+});
+
+function renderFilters() {
+  const categories = ["Бүгд", ...new Set(state.articles.map(item => item.category).filter(Boolean))];
+
+  $("#categoryCount").textContent = Math.max(0, categories.length - 1);
+
+  filterBar.innerHTML = categories.map(category => `
+    <button class="${category === state.activeCategory ? "active" : ""}" type="button" data-category="${category}">
+      ${category}
+    </button>
+  `).join("");
 
   filterBar.querySelectorAll("button").forEach(button => {
     button.addEventListener("click", () => {
@@ -41,69 +83,123 @@ function renderFilters() {
 function articleMatches(article) {
   const byCategory = state.activeCategory === "Бүгд" || article.category === state.activeCategory;
   const q = normalize(state.query);
-  const bySearch = !q || [article.title, article.summary, article.whyItMatters, article.source, article.category]
-    .some(field => normalize(field).includes(q));
+  const text = [
+    article.title,
+    article.summary,
+    article.whyItMatters,
+    article.source,
+    article.category,
+    article.date
+  ].map(normalize).join(" ");
+  return byCategory && (!q || text.includes(q));
+}
 
-  return byCategory && bySearch;
+function sortArticles(articles) {
+  return [...articles].sort((a, b) => {
+    if (state.sort === "oldest") return new Date(a.date) - new Date(b.date);
+    if (state.sort === "category") return (a.category || "").localeCompare(b.category || "mn");
+    return new Date(b.date) - new Date(a.date);
+  });
 }
 
 function renderArticles() {
-  const filtered = state.articles.filter(articleMatches);
+  const filtered = sortArticles(state.articles.filter(articleMatches));
+  newsGrid.classList.toggle("list", state.view === "list");
 
-  document.getElementById("articleCount").textContent = state.articles.length;
+  $("#articleCount").textContent = state.articles.length;
+  $("#readingTime").textContent = estimateReadingTime(filtered.length);
+  $("#resultLine").textContent = `${filtered.length} мэдээ харагдаж байна`;
 
   if (!filtered.length) {
-    newsGrid.innerHTML = `<div class="news-card"><h3>Мэдээ олдсонгүй</h3><p>Хайлтын үгээ өөрчлөөд дахин оролдоно уу.</p></div>`;
+    newsGrid.innerHTML = `
+      <div class="empty-state">
+        <h3>Мэдээ олдсонгүй</h3>
+        <p>Хайлтын үгээ богиносгох эсвэл “Бүгд” ангиллыг сонгоод дахин оролдоно уу.</p>
+      </div>`;
     return;
   }
 
   newsGrid.innerHTML = filtered.map(article => `
     <article class="news-card">
-      <div class="meta">
-        <span>${formatter.format(new Date(article.date))}</span>
-        <span class="tag">${article.category}</span>
+      <div>
+        <div class="card-meta">
+          <span>${formatter.format(new Date(article.date))}</span>
+          <span class="badge">${article.category || "Ерөнхий"}</span>
+        </div>
       </div>
-      <h3>${article.title}</h3>
-      <p>${article.summary}</p>
-      <p class="why"><strong>Яагаад чухал вэ?</strong><br>${article.whyItMatters}</p>
-      <a class="source" href="${article.url}" target="_blank" rel="noreferrer">Эх сурвалж үзэх →</a>
+      <div>
+        <h3>${article.title}</h3>
+        <p>${article.summary}</p>
+        <p class="why"><strong>Яагаад чухал вэ?</strong><br>${article.whyItMatters}</p>
+      </div>
+      <a class="source-link" href="${article.url}" target="_blank" rel="noreferrer">
+        ${article.source || "Эх сурвалж"} →
+      </a>
     </article>
   `).join("");
 }
 
-function setDate() {
-  const now = new Date();
-  const weekdays = ["Ням", "Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба"];
-  document.getElementById("day").textContent = weekdays[now.getDay()];
-  document.getElementById("date").textContent = `${now.getMonth() + 1}/${now.getDate()}`;
-  document.getElementById("year").textContent = now.getFullYear();
+function setView(view) {
+  state.view = view;
+  localStorage.setItem("aiNewsView", view);
+  $("#gridView").classList.toggle("active", view === "grid");
+  $("#listView").classList.toggle("active", view === "list");
+  renderArticles();
 }
-
-async function loadNews() {
-  try {
-    const response = await fetch("news.json");
-    const data = await response.json();
-
-    document.getElementById("dailyTitle").textContent = data.dailyTitle;
-    document.getElementById("dailySummary").textContent = data.dailySummary;
-
-    state.articles = data.articles || [];
-    renderFilters();
-    renderArticles();
-  } catch (error) {
-    newsGrid.innerHTML = `
-      <div class="news-card">
-        <h3>Мэдээ уншиж чадсангүй</h3>
-        <p>news.json файл байгаа эсэхийг шалгана уу. Local file байдлаар нээхэд зарим browser fetch-г хориглож болно. VS Code Live Server эсвэл hosting дээр байрлуулбал ажиллана.</p>
-      </div>
-    `;
-  }
-}
+$("#gridView").addEventListener("click", () => setView("grid"));
+$("#listView").addEventListener("click", () => setView("list"));
 
 searchInput.addEventListener("input", event => {
   state.query = event.target.value;
   renderArticles();
 });
 
-setDate();
+sortSelect.addEventListener("change", event => {
+  state.sort = event.target.value;
+  renderArticles();
+});
+
+$("#copySummary").addEventListener("click", async () => {
+  const text = `${$("#dailyTitle").textContent}\n\n${$("#dailySummary").textContent}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    $("#copySummary").textContent = "Хуулагдлаа ✓";
+    setTimeout(() => $("#copySummary").textContent = "Дүгнэлт хуулах", 1600);
+  } catch {
+    $("#copySummary").textContent = "Хуулах боломжгүй";
+    setTimeout(() => $("#copySummary").textContent = "Дүгнэлт хуулах", 1600);
+  }
+});
+
+$("#subscribeForm").addEventListener("submit", event => {
+  event.preventDefault();
+  $("#formNote").textContent = "Баярлалаа. Энэ demo тул backend холбосны дараа бодитоор бүртгэнэ.";
+  event.target.reset();
+});
+
+async function loadNews() {
+  try {
+    const response = await fetch("news.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("news.json олдсонгүй");
+    const data = await response.json();
+
+    $("#dailyTitle").textContent = data.dailyTitle || "AI салбарын тойм";
+    $("#dailySummary").textContent = data.dailySummary || "";
+    $("#heroSummary").textContent = data.dailySummary || "Өнөөдрийн тойм бэлэн.";
+    state.articles = Array.isArray(data.articles) ? data.articles : [];
+
+    renderFilters();
+    setView(state.view);
+  } catch (error) {
+    $("#heroSummary").textContent = "news.json файл уншигдсангүй.";
+    $("#resultLine").textContent = "Өгөгдөл ачаалах үед алдаа гарлаа.";
+    newsGrid.innerHTML = `
+      <div class="empty-state">
+        <h3>news.json уншигдсангүй</h3>
+        <p>GitHub дээр index.html, app.js, styles.css, news.json файлууд нэг folder дотор байгаа эсэхийг шалгана уу.</p>
+      </div>`;
+  }
+}
+
+updateClock();
 loadNews();

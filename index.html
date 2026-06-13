@@ -1,114 +1,178 @@
 <!doctype html>
-<html lang="mn">
+<html lang="mn" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Өдрийн Тойм</title>
-  <meta name="description" content="AI салбарын өдөр тутмын мэдээ, судалгаа, бодлого, бүтээгдэхүүний товч тойм." />
+  <title>AI Өдрийн Тойм — Монгол AI мэдээ</title>
+  <meta name="description" content="AI салбарын өдөр тутмын мэдээ, судалгаа, бодлого, бүтээгдэхүүний монгол товч тойм." />
+  <meta name="theme-color" content="#0a0f1f" />
+  <meta property="og:title" content="AI Өдрийн Тойм" />
+  <meta property="og:description" content="AI ертөнцийн чухал мэдээллийг монголоор, товч бөгөөд ойлгомжтой." />
+  <link rel="preload" href="styles.css" as="style" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav">
-      <a class="logo" href="#">
-        <span class="logo-mark">AI</span>
-        <span>Өдрийн Тойм</span>
+  <a class="skip-link" href="#main">Контент руу шууд очих</a>
+
+  <header class="topbar" id="top">
+    <nav class="nav-shell" aria-label="Үндсэн цэс">
+      <a class="brand" href="#top" aria-label="AI Өдрийн Тойм нүүр">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="img">
+            <path d="M16 3.25 27.04 9.6v12.8L16 28.75 4.96 22.4V9.6L16 3.25Z"></path>
+            <path d="M10.3 18.7h11.4M11.8 13.5h8.4M14.2 8.9h3.6"></path>
+          </svg>
+        </span>
+        <span>
+          <strong>AI Өдрийн Тойм</strong>
+          <small>Монгол AI мэдээ</small>
+        </span>
       </a>
-      <div class="nav-links">
-        <a href="#top-news">Онцлох</a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Цэс нээх" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#latest">Мэдээ</a>
+        <a href="#insight">Дүгнэлт</a>
         <a href="#categories">Ангилал</a>
-        <a href="#about">Тухай</a>
+        <a href="#subscribe">Бүртгүүлэх</a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Өнгөний горим солих">
+          <span id="themeIcon">☾</span>
+          <span id="themeLabel">Dark</span>
+        </button>
       </div>
     </nav>
-
-    <section class="hero">
-      <p class="eyebrow">Өдөр бүр шинэчлэгдэх AI мэдээ</p>
-      <h1>AI ертөнцийн чухал мэдээллийг монголоор, товч бөгөөд ойлгомжтой.</h1>
-      <p class="hero-text">
-        Бүтээгдэхүүн, судалгаа, бодлого зохицуулалт, AI дэд бүтэц, зах зээлийн гол өөрчлөлтүүдийг нэг дороос уншаарай.
-      </p>
-
-      <div class="hero-actions">
-        <a class="btn primary" href="#top-news">Өнөөдрийн тойм унших</a>
-        <a class="btn secondary" href="#newsletter">Мэдээ авах</a>
-      </div>
-
-      <div class="stats">
-        <div><strong id="articleCount">0</strong><span>мэдээ</span></div>
-        <div><strong>5 мин</strong><span>унших хугацаа</span></div>
-        <div><strong>MN</strong><span>монгол тойм</span></div>
-      </div>
-    </section>
   </header>
 
-  <main>
-    <section class="summary-card">
-      <div>
-        <p class="eyebrow">Өнөөдрийн гол санаа</p>
-        <h2 id="dailyTitle">AI салбарын тойм</h2>
-        <p id="dailySummary"></p>
-      </div>
-      <div class="date-box">
-        <span id="day"></span>
-        <strong id="date"></strong>
+  <main id="main">
+    <section class="hero-section" aria-labelledby="heroTitle">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="live-badge">
+            <span class="pulse" aria-hidden="true"></span>
+            <span id="todayLabel">Өнөөдрийн тойм</span>
+          </div>
+          <h1 id="heroTitle">AI ертөнцийн чухал мэдээллийг нэг дэлгэцээс.</h1>
+          <p>
+            Бүтээгдэхүүн, судалгаа, бодлого, дэд бүтэц, аюулгүй байдлын гол өөрчлөлтийг монголоор товч, эх сурвалжтай, уншихад амар хэлбэрээр хүргэнэ.
+          </p>
+          <div class="hero-actions" aria-label="Гол үйлдлүүд">
+            <a class="btn primary" href="#latest">Өнөөдрийн мэдээ унших</a>
+            <a class="btn ghost" href="#subscribe">Тойм авах</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Өнөөдрийн статистик">
+          <div class="panel-header">
+            <span>AI Pulse</span>
+            <strong id="clock">--:--</strong>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <span>Мэдээ</span>
+              <strong id="articleCount">0</strong>
+            </div>
+            <div class="metric-card">
+              <span>Ангилал</span>
+              <strong id="categoryCount">0</strong>
+            </div>
+            <div class="metric-card wide">
+              <span>Унших хугацаа</span>
+              <strong id="readingTime">5 мин</strong>
+            </div>
+          </div>
+          <p id="heroSummary">Өгөгдөл ачаалж байна...</p>
+        </aside>
       </div>
     </section>
 
-    <section id="top-news" class="section">
-      <div class="section-header">
+    <section class="daily-brief" id="insight" aria-labelledby="dailyTitle">
+      <div>
+        <p class="section-kicker">Өнөөдрийн гол санаа</p>
+        <h2 id="dailyTitle">AI салбарын тойм</h2>
+        <p id="dailySummary">Мэдээний өгөгдөл ачаалж байна...</p>
+      </div>
+      <div class="brief-actions">
+        <button class="chip active" id="copySummary" type="button">Дүгнэлт хуулах</button>
+        <a class="chip" href="#latest">Мэдээ рүү очих</a>
+      </div>
+    </section>
+
+    <section class="toolbar-section" id="latest" aria-labelledby="latestTitle">
+      <div class="section-head">
         <div>
-          <p class="eyebrow">Шинэ мэдээлэл</p>
-          <h2>Онцлох мэдээнүүд</h2>
+          <p class="section-kicker">Шинэ мэдээлэл</p>
+          <h2 id="latestTitle">Онцлох мэдээнүүд</h2>
         </div>
-        <label class="search">
-          <span>Хайх</span>
-          <input id="searchInput" type="search" placeholder="OpenAI, NVIDIA, хууль..." />
+        <div class="view-options" aria-label="Харагдац солих">
+          <button class="icon-button active" id="gridView" type="button" aria-label="Grid харагдац">▦</button>
+          <button class="icon-button" id="listView" type="button" aria-label="List харагдац">☰</button>
+        </div>
+      </div>
+
+      <div class="controls" role="search">
+        <label class="search-box">
+          <span>Хайлт</span>
+          <input id="searchInput" type="search" placeholder="OpenAI, NVIDIA, AI Act..." autocomplete="off" />
+        </label>
+        <label class="select-box">
+          <span>Эрэмбэлэх</span>
+          <select id="sortSelect">
+            <option value="newest">Шинэ эхэнд</option>
+            <option value="oldest">Хуучин эхэнд</option>
+            <option value="category">Ангиллаар</option>
+          </select>
         </label>
       </div>
 
-      <div id="filterBar" class="filter-bar"></div>
-      <div id="newsGrid" class="news-grid"></div>
+      <div class="filter-wrap" aria-label="Мэдээний ангилал">
+        <div id="filterBar" class="filter-bar"></div>
+      </div>
+
+      <div class="result-line" id="resultLine" aria-live="polite">Мэдээ ачаалж байна...</div>
+      <div id="newsGrid" class="news-grid" aria-live="polite"></div>
     </section>
 
-    <section id="categories" class="section split">
+    <section id="categories" class="category-section" aria-labelledby="categoryTitle">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Ангилал</p>
+          <h2 id="categoryTitle">Ямар мэдээлэл хамардаг вэ?</h2>
+        </div>
+      </div>
+      <div class="category-cards">
+        <article><span>01</span><h3>Бүтээгдэхүүн</h3><p>Шинэ AI app, model, developer tool, enterprise workflow.</p></article>
+        <article><span>02</span><h3>Судалгаа</h3><p>Foundation model, benchmark, multilingual AI, safety research.</p></article>
+        <article><span>03</span><h3>Бодлого</h3><p>AI Act, compliance, экспортын хяналт, privacy regulation.</p></article>
+        <article><span>04</span><h3>Дэд бүтэц</h3><p>GPU, дата төв, inference optimization, cloud deployment.</p></article>
+      </div>
+    </section>
+
+    <section id="subscribe" class="subscribe-card" aria-labelledby="subscribeTitle">
       <div>
-        <p class="eyebrow">Ангилал</p>
-        <h2>Юуг хамардаг вэ?</h2>
-        <p>
-          Энэ сайт нь AI бүтээгдэхүүн, судалгааны ахиц, бодлого зохицуулалт, дата төв/чип, startup болон хөрөнгө оруулалтын мэдээллийг хялбаршуулан хүргэхэд зориулагдсан.
-        </p>
+        <p class="section-kicker">Өдөр тутмын тойм</p>
+        <h2 id="subscribeTitle">AI мэдээг имэйлээр авах</h2>
+        <p>Энэ хэсэг одоогоор demo. Дараагийн шатанд Netlify Forms, Formspree, Supabase эсвэл Mailchimp холбож бодитоор бүртгэл авдаг болгож болно.</p>
       </div>
-      <div class="category-list">
-        <span>Бүтээгдэхүүн</span>
-        <span>Судалгаа</span>
-        <span>Бодлого</span>
-        <span>Дэд бүтэц</span>
-        <span>Бизнес</span>
-        <span>Аюулгүй байдал</span>
-      </div>
-    </section>
-
-    <section id="newsletter" class="newsletter">
-      <p class="eyebrow">Өдөр тутмын тойм</p>
-      <h2>Имэйлээр мэдээлэл авах хэсэг</h2>
-      <p>Энэ бол демо маягт. Жинхэнэ имэйл илгээх бол Formspree, ConvertKit, Mailchimp эсвэл өөр backend холбож болно.</p>
-      <form onsubmit="event.preventDefault(); alert('Бүртгэл амжилттай гэж төсөөлөв. Backend холбосны дараа бодитоор ажиллана.');">
-        <input type="email" placeholder="Таны имэйл" required />
-        <button type="submit">Бүртгүүлэх</button>
+      <form id="subscribeForm">
+        <label>
+          <span class="sr-only">Имэйл хаяг</span>
+          <input type="email" placeholder="email@example.com" required />
+        </label>
+        <button class="btn primary" type="submit">Бүртгүүлэх</button>
       </form>
-    </section>
-
-    <section id="about" class="section about">
-      <p class="eyebrow">Админд</p>
-      <h2>Мэдээ яаж шинэчлэх вэ?</h2>
-      <p>
-        <code>news.json</code> файлыг нээгээд мэдээний гарчиг, тайлбар, эх сурвалж, ангиллыг засна. Сайт автоматаар тэр JSON-оос уншиж мэдээг харуулна.
-      </p>
+      <p class="form-note" id="formNote" role="status"></p>
     </section>
   </main>
 
-  <footer>
-    <p>© <span id="year"></span> AI Өдрийн Тойм. Мэдээллийг эх сурвалжтай нь шалгаж уншина уу.</p>
+  <footer class="footer">
+    <div>
+      <strong>AI Өдрийн Тойм</strong>
+      <p>Монгол хэлээр AI салбарын товч, эх сурвалжтай мэдээлэл.</p>
+    </div>
+    <a href="#top">Дээш буцах ↑</a>
   </footer>
 
   <script src="app.js"></script>

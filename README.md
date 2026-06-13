@@ -1,44 +1,38 @@
-# AI Өдрийн Тойм — Монгол AI мэдээний сайт
+# AI Өдрийн Тойм v2 — Modern UI/UX
 
-Энэ бол AI мэдээний статик вэбсайтын эхний хувилбар.
+Энэ хувилбар нь GitHub Pages дээр шууд upload хийхэд тохиромжтой статик сайт.
 
-## Файлууд
+## Шинэ сайжруулалт
 
-- `index.html` — сайтын бүтэц
-- `styles.css` — дизайн
-- `app.js` — хайлт, шүүлтүүр, JSON унших логик
-- `news.json` — мэдээний өгөгдөл
+- Modern glassmorphism + editorial news layout
+- Mobile-first responsive design
+- Sticky navigation
+- Dark / Light mode toggle
+- Search + category filter + sorting
+- Grid/List view
+- Copy summary button
+- Better loading/error states
+- Accessibility improvements:
+  - skip link
+  - semantic landmarks
+  - focus styles
+  - ARIA labels
+  - keyboard-friendly controls
+  - reduced motion support
 
-## Яаж ажиллуулах вэ?
+## GitHub Pages дээр шинэчлэх
 
-Хамгийн амархан арга:
+Repository дээрээ эдгээр файлуудыг хуучинтай нь overwrite хийж upload хийнэ:
 
-1. VS Code суулгана
-2. Live Server extension суулгана
-3. `index.html` дээр right click → **Open with Live Server**
+- index.html
+- styles.css
+- app.js
+- news.json
+- README.md
 
-Анхаарах зүйл: `index.html` файлыг шууд double-click хийж нээвэл зарим browser `news.json` уншихыг хориглож магадгүй.
+Commit хийсний дараа 1–3 минут хүлээгээд сайтаа refresh хийнэ.
 
-## Яаж мэдээ нэмэх вэ?
+## Мэдээ нэмэх
 
-`news.json` файл дотор `articles` хэсэгт дараах бүтэцтэй шинэ мэдээ нэмнэ:
+`news.json` дотор `articles` array-д шинэ объект нэмнэ.
 
-```json
-{
-  "title": "Мэдээний гарчиг",
-  "category": "Бүтээгдэхүүн",
-  "date": "2026-06-13",
-  "summary": "Товч мэдээ",
-  "whyItMatters": "Яагаад чухал болох тайлбар",
-  "source": "Эх сурвалжийн нэр",
-  "url": "https://example.com"
-}
-```
-
-## Дараагийн шатанд хийж болох зүйл
-
-- Жинхэнэ backend холбож админ самбартай болгох
-- RSS feed эсвэл News API холбож автоматаар мэдээ татах
-- Supabase/Firebase database ашиглах
-- Netlify/Vercel дээр үнэгүй байрлуулах
-- Монгол хэлээр AI тойм автоматаар үүсгэх workflow холбох
