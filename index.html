@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Өдрийн Тойм</title>
+  <meta name="description" content="AI салбарын өдөр тутмын мэдээ, судалгаа, бодлого, бүтээгдэхүүний товч тойм." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="#">
+        <span class="logo-mark">AI</span>
+        <span>Өдрийн Тойм</span>
+      </a>
+      <div class="nav-links">
+        <a href="#top-news">Онцлох</a>
+        <a href="#categories">Ангилал</a>
+        <a href="#about">Тухай</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Өдөр бүр шинэчлэгдэх AI мэдээ</p>
+      <h1>AI ертөнцийн чухал мэдээллийг монголоор, товч бөгөөд ойлгомжтой.</h1>
+      <p class="hero-text">
+        Бүтээгдэхүүн, судалгаа, бодлого зохицуулалт, AI дэд бүтэц, зах зээлийн гол өөрчлөлтүүдийг нэг дороос уншаарай.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn primary" href="#top-news">Өнөөдрийн тойм унших</a>
+        <a class="btn secondary" href="#newsletter">Мэдээ авах</a>
+      </div>
+
+      <div class="stats">
+        <div><strong id="articleCount">0</strong><span>мэдээ</span></div>
+        <div><strong>5 мин</strong><span>унших хугацаа</span></div>
+        <div><strong>MN</strong><span>монгол тойм</span></div>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="summary-card">
+      <div>
+        <p class="eyebrow">Өнөөдрийн гол санаа</p>
+        <h2 id="dailyTitle">AI салбарын тойм</h2>
+        <p id="dailySummary"></p>
+      </div>
+      <div class="date-box">
+        <span id="day"></span>
+        <strong id="date"></strong>
+      </div>
+    </section>
+
+    <section id="top-news" class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Шинэ мэдээлэл</p>
+          <h2>Онцлох мэдээнүүд</h2>
+        </div>
+        <label class="search">
+          <span>Хайх</span>
+          <input id="searchInput" type="search" placeholder="OpenAI, NVIDIA, хууль..." />
+        </label>
+      </div>
+
+      <div id="filterBar" class="filter-bar"></div>
+      <div id="newsGrid" class="news-grid"></div>
+    </section>
+
+    <section id="categories" class="section split">
+      <div>
+        <p class="eyebrow">Ангилал</p>
+        <h2>Юуг хамардаг вэ?</h2>
+        <p>
+          Энэ сайт нь AI бүтээгдэхүүн, судалгааны ахиц, бодлого зохицуулалт, дата төв/чип, startup болон хөрөнгө оруулалтын мэдээллийг хялбаршуулан хүргэхэд зориулагдсан.
+        </p>
+      </div>
+      <div class="category-list">
+        <span>Бүтээгдэхүүн</span>
+        <span>Судалгаа</span>
+        <span>Бодлого</span>
+        <span>Дэд бүтэц</span>
+        <span>Бизнес</span>
+        <span>Аюулгүй байдал</span>
+      </div>
+    </section>
+
+    <section id="newsletter" class="newsletter">
+      <p class="eyebrow">Өдөр тутмын тойм</p>
+      <h2>Имэйлээр мэдээлэл авах хэсэг</h2>
+      <p>Энэ бол демо маягт. Жинхэнэ имэйл илгээх бол Formspree, ConvertKit, Mailchimp эсвэл өөр backend холбож болно.</p>
+      <form onsubmit="event.preventDefault(); alert('Бүртгэл амжилттай гэж төсөөлөв. Backend холбосны дараа бодитоор ажиллана.');">
+        <input type="email" placeholder="Таны имэйл" required />
+        <button type="submit">Бүртгүүлэх</button>
+      </form>
+    </section>
+
+    <section id="about" class="section about">
+      <p class="eyebrow">Админд</p>
+      <h2>Мэдээ яаж шинэчлэх вэ?</h2>
+      <p>
+        <code>news.json</code> файлыг нээгээд мэдээний гарчиг, тайлбар, эх сурвалж, ангиллыг засна. Сайт автоматаар тэр JSON-оос уншиж мэдээг харуулна.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> AI Өдрийн Тойм. Мэдээллийг эх сурвалжтай нь шалгаж уншина уу.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
